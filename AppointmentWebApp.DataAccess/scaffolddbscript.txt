@@ -1,0 +1,1 @@
+﻿Scaffold-DbContext "Server=DESKTOP-C2BO152;User ID=sap;Password=indocyber;Database=AppointmentWebAppDatabase;Trusted_Connection=False;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
