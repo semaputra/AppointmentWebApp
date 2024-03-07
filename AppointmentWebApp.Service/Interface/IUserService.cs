@@ -13,5 +13,6 @@ namespace AppointmentWebApp.Service.Interface
         Task<Muser> GetUser(Guid id);
         Task<Guid> Add(Muser user);
         Task<Muser> Update(Muser user);
+        Task<Muser> Login(string username, string password);
     }
 }

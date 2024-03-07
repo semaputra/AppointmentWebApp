@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AppointmentWebApp.DataAccess.Models;
 using AppointmentWebApp.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppointmentWebApp.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         protected readonly IUserService _userService;

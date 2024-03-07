@@ -61,7 +61,7 @@ namespace AppointmentWebApp.Service.Service
             }
             catch (Exception ex)
             {
-                throw new Exception("Error occurred while retrieving users from the database.", ex); ;
+                throw new Exception("Error occurred while retrieving users from the database.", ex);
             }
         }
 
@@ -76,6 +76,23 @@ namespace AppointmentWebApp.Service.Service
             catch (Exception ex)
             {
                 throw new Exception("Error occurred while updating user to the database.", ex);
+            }
+        }
+
+        public async Task<Muser> Login(string username, string password)
+        {
+            try
+            {
+                var data = await _databaseContext.Musers.SingleOrDefaultAsync(x => x.Username == username && x.Password == password);
+                if (data == null)
+                {
+                    throw new Exception("Error occurred while retrieving users from the database.");
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occurred while retrieving users from the database.", ex);
             }
         }
     }
