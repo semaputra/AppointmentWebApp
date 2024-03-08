@@ -16,6 +16,7 @@ namespace AppointmentWebApp.DataAccess.Models
         {
         }
 
+        public virtual DbSet<DaySetting> DaySettings { get; set; } = null!;
         public virtual DbSet<Mlocation> Mlocations { get; set; } = null!;
         public virtual DbSet<Mrole> Mroles { get; set; } = null!;
         public virtual DbSet<Muser> Musers { get; set; } = null!;
@@ -27,12 +28,27 @@ namespace AppointmentWebApp.DataAccess.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=DESKTOP-C2BO152;User ID=sap;Password=indocyber;Database=AppointmentWebAppDatabase;Trusted_Connection=False;");
+                optionsBuilder.UseSqlServer("Server=sapdbv01.database.windows.net;User ID=sap;Password=Catslover123;Database=AppointmentWebAppDatabase;Trusted_Connection=False;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<DaySetting>(entity =>
+            {
+                entity.ToTable("DaySetting");
+
+                entity.Property(e => e.DaySettingId).HasColumnName("day_setting_id");
+
+                entity.Property(e => e.Day)
+                    .HasColumnType("date")
+                    .HasColumnName("day");
+
+                entity.Property(e => e.DayStatus).HasColumnName("day_status");
+
+                entity.Property(e => e.Quantity).HasColumnName("quantity");
+            });
+
             modelBuilder.Entity<Mlocation>(entity =>
             {
                 entity.HasKey(e => e.LocationId);
@@ -112,22 +128,26 @@ namespace AppointmentWebApp.DataAccess.Models
 
             modelBuilder.Entity<RuserRole>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.UserId);
 
                 entity.ToTable("ruser_role");
 
+                entity.Property(e => e.UserId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("user_id");
+
                 entity.Property(e => e.RoleId).HasColumnName("role_id");
 
-                entity.Property(e => e.UserId).HasColumnName("user_id");
-
                 entity.HasOne(d => d.Role)
-                    .WithMany()
+                    .WithMany(p => p.RuserRoles)
                     .HasForeignKey(d => d.RoleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ruser_role_mrole");
 
                 entity.HasOne(d => d.User)
-                    .WithMany()
-                    .HasForeignKey(d => d.UserId)
+                    .WithOne(p => p.RuserRole)
+                    .HasForeignKey<RuserRole>(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ruser_role_muser");
             });
 

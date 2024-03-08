@@ -1,4 +1,5 @@
-﻿using AppointmentWebApp.DataAccess.Models;
+﻿using AppointmentWebApp.BussinessModel.ViewModel;
+using AppointmentWebApp.DataAccess.Models;
 using AppointmentWebApp.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ namespace AppointmentWebApp.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Auth(Muser user)
+        public async Task<IActionResult> Auth(UserViewModel user)
         {
             IActionResult response = Unauthorized();
             if (user.Username == null || user.Password == null)
@@ -73,6 +74,28 @@ namespace AppointmentWebApp.API.Controllers
                 catch (Exception ex)
                 {
                     return StatusCode(500, ex);
+                }
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Login(UserViewModel user)
+        {
+            if (user.Username == null || user.Password == null)
+            {
+                return BadRequest();
+            }
+            var data = await _userService.Login(user.Username, user.Password);
+            if (data == null) { return NotFound(); }
+            else
+            {
+                try
+                {
+                    return Ok(data);
+                }
+                catch (Exception)
+                {
+                    return StatusCode(500);
                 }
             }
         }

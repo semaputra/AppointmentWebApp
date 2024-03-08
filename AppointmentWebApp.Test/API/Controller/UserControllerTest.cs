@@ -1,4 +1,5 @@
 ﻿using AppointmentWebApp.API.Controllers;
+using AppointmentWebApp.BussinessModel.ViewModel;
 using AppointmentWebApp.DataAccess.Models;
 using AppointmentWebApp.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,7 @@ namespace AppointmentWebApp.Test.API.Controller
         {
             // Arrange
             var userServiceMock = new Mock<IUserService>();
-            var users = new List<Muser> { new Muser { UserId = Guid.NewGuid(), Username = "User1" }, new Muser { UserId = Guid.NewGuid(), Username = "User2" } };
+            var users = new List<UserViewModel> { new UserViewModel { UserId = Guid.NewGuid(), Username = "User1" }, new UserViewModel { UserId = Guid.NewGuid(), Username = "User2" } };
             userServiceMock.Setup(service => service.GetUsers()).ReturnsAsync(users);
             var controller = new UserController(userServiceMock.Object);
 

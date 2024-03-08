@@ -1,0 +1,66 @@
+﻿@model AppointmentWebApp.BussinessModel.ViewModel.AppointmentViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="hero-section">
+    <div class="content">
+        <div class="card">
+            <div class="card-header">
+                <h4>Create New Appointment</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <form asp-action="Create">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="AppointmentTitle" class="control-label"></label>
+                                <input asp-for="AppointmentTitle" class="form-control" />
+                                <span asp-validation-for="AppointmentTitle" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="AppointmentPurpose" class="control-label"></label>
+                                <textarea asp-for="AppointmentPurpose" class="form-control"></textarea>
+                                <span asp-validation-for="AppointmentPurpose" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="AppointmentDate" class="control-label"></label>
+                                <input asp-for="AppointmentDate" class="form-control" />
+                                <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="LocationId" class="control-label"></label>
+                                <select asp-for="LocationId" class="form-control">
+                                    <option value="1">Jakarta Pusat</option>
+                                    <option value="2">Jakarta Barat</option>
+                                    <option value="3">Jakarta Utara</option>
+                                    <option value="4">Jakarta Timur</option>
+                                    <option value="5">Jakarta Selatan</option>
+                                </select>
+                                <span asp-validation-for="LocationId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="LocationDescription" class="control-label"></label>
+                                <textarea asp-for="LocationDescription" class="form-control"></textarea>
+                                <span asp-validation-for="LocationDescription" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Create" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a asp-action="Index">Back to List</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

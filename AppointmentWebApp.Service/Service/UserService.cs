@@ -1,5 +1,7 @@
-﻿using AppointmentWebApp.DataAccess.Models;
+﻿using AppointmentWebApp.BussinessModel.ViewModel;
+using AppointmentWebApp.DataAccess.Models;
 using AppointmentWebApp.Service.Interface;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,12 +14,14 @@ namespace AppointmentWebApp.Service.Service
     public class UserService : IUserService
     {
         private readonly AppointmentWebAppDatabaseContext _databaseContext;
+        private readonly IMapper _mapper;
 
-        public UserService(AppointmentWebAppDatabaseContext databaseContext) { 
+        public UserService(AppointmentWebAppDatabaseContext databaseContext, IMapper mapper) { 
             _databaseContext = databaseContext;
+            _mapper = mapper;
         }
 
-        public async Task<Guid> Add(Muser user)
+        public async Task<Guid> Add(UserViewModel user)
         {
             try
             {
@@ -25,9 +29,16 @@ namespace AppointmentWebApp.Service.Service
                 {
                     throw new ArgumentNullException(nameof(user), "User cannot be null.");
                 }
-
-                _databaseContext.Musers.Add(user);
+                var userMap = _mapper.Map<Muser>(user);
+                _databaseContext.Musers.Add(userMap);
                 await _databaseContext.SaveChangesAsync();
+
+                var role = _databaseContext.Mroles.Where(x => x.RoleId == user.UserRoleId).FirstOrDefault();
+               
+                var ur = new RuserRole { Role = role, User = userMap };
+
+                _databaseContext.RuserRoles.Add(ur);
+                _databaseContext.SaveChanges();
 
                 return user.UserId;
             }
@@ -37,15 +48,30 @@ namespace AppointmentWebApp.Service.Service
             }
         }
 
-        public async Task<Muser> GetUser(Guid id)
+        public async Task<UserViewModel> GetUser(Guid id)
         {
             try
             {
-                var data = await _databaseContext.Musers.FindAsync(id);
+                var data = await _databaseContext.Musers
+                    .Join(_databaseContext.RuserRoles, user => user.UserId, role => role.UserId,
+                    (user, role) => new UserViewModel()
+                    {
+                        UserId = user.UserId,
+                        Username = user.Username,
+                        Password = user.Password,
+                        Email = user.Email,
+                        Fullname = user.Fullname,
+                        Status = user.Status,
+                        CreatedDate = user.CreatedDate,
+                        CreatedBy = user.CreatedBy,
+                        ModifiedDate = user.ModifiedDate,
+                        ModifiedBy = user.ModifiedBy,
+                        UserRoleId = role.RoleId
+                    }).Where(x => x.UserId == id).FirstOrDefaultAsync();
                 if (data == null) {
                     throw new Exception("Error occurred while retrieving users from the database.");
                 }
-                return data;
+                return _mapper.Map<UserViewModel>(data);
             }
             catch (Exception ex)
             {
@@ -53,11 +79,28 @@ namespace AppointmentWebApp.Service.Service
             }
         }
 
-        public async Task<IEnumerable<Muser>> GetUsers()
+        public async Task<IEnumerable<UserViewModel>> GetUsers()
         {
             try
             {
-                return await _databaseContext.Musers.ToListAsync();
+                var usersFromDb = await _databaseContext.Musers
+                    .Join(_databaseContext.RuserRoles, user => user.UserId, role => role.UserId,
+                    (user,role) => new UserViewModel() { 
+                        UserId = user.UserId,
+                        Username = user.Username,
+                        Password = user.Password,
+                        Email = user.Email,
+                        Fullname = user.Fullname,
+                        Status = user.Status,
+                        CreatedDate = user.CreatedDate,
+                        CreatedBy = user.CreatedBy,
+                        ModifiedDate = user.ModifiedDate,
+                        ModifiedBy = user.ModifiedBy,
+                        UserRoleId = role.RoleId
+                    })
+                    .ToListAsync();
+                var usersViewModel = _mapper.Map<IEnumerable<UserViewModel>>(usersFromDb);
+                return usersViewModel;
             }
             catch (Exception ex)
             {
@@ -65,13 +108,22 @@ namespace AppointmentWebApp.Service.Service
             }
         }
 
-        public async Task<Muser> Update(Muser user)
+        public async Task<UserViewModel> Update(UserViewModel user)
         {
             try
             {
-                _databaseContext.Entry(user).State = EntityState.Modified;
+                var userMap = _mapper.Map<Muser>(user);
+                _databaseContext.Entry(userMap).State = EntityState.Modified;               
                 await _databaseContext.SaveChangesAsync();
-                return user;
+
+                var rolmap = _databaseContext.RuserRoles.Where(x => x.UserId == user.UserId).FirstOrDefault();
+                if (rolmap != null && user.UserRoleId.HasValue)
+                {
+                    rolmap.RoleId = user.UserRoleId.Value;
+                    _databaseContext.SaveChanges();
+                }
+
+                return _mapper.Map<UserViewModel>(userMap);
             }
             catch (Exception ex)
             {
@@ -79,16 +131,51 @@ namespace AppointmentWebApp.Service.Service
             }
         }
 
-        public async Task<Muser> Login(string username, string password)
+        public async Task<UserViewModel> Delete(Guid id)
         {
             try
             {
-                var data = await _databaseContext.Musers.SingleOrDefaultAsync(x => x.Username == username && x.Password == password);
+                var data = await _databaseContext.Musers.FindAsync(id);
+                if (data != null)
+                {
+                    data.Status = false;
+                    _databaseContext.Entry(data).State = EntityState.Modified;
+                    await _databaseContext.SaveChangesAsync();
+                    return _mapper.Map<UserViewModel>(data);
+                }
+                throw new Exception("Error occurred while updating user to the database.");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occurred while updating user to the database.", ex);
+            }
+        }
+
+        public async Task<UserViewModel> Login(string username, string password)
+        {
+            try
+            {
+                var data = await _databaseContext.Musers
+                    .Join(_databaseContext.RuserRoles, user => user.UserId, role => role.UserId,
+                    (user, role) => new UserViewModel()
+                    {
+                        UserId = user.UserId,
+                        Username = user.Username,
+                        Password = user.Password,
+                        Email = user.Email,
+                        Fullname = user.Fullname,
+                        Status = user.Status,
+                        CreatedDate = user.CreatedDate,
+                        CreatedBy = user.CreatedBy,
+                        ModifiedDate = user.ModifiedDate,
+                        ModifiedBy = user.ModifiedBy,
+                        UserRoleId = role.RoleId
+                    }).SingleOrDefaultAsync(x => x.Username == username && x.Password == password);
                 if (data == null)
                 {
                     throw new Exception("Error occurred while retrieving users from the database.");
                 }
-                return data;
+                return _mapper.Map<UserViewModel>(data);
             }
             catch (Exception ex)
             {

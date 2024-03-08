@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppointmentWebApp.Service",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppointmentWebApp.Test", "AppointmentWebApp.Test\AppointmentWebApp.Test.csproj", "{C64EFB9C-EF55-4956-98B4-250810854CF1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppointmentWebApp.BussinessModel", "AppointmentWebApp.BussinessModel\AppointmentWebApp.BussinessModel.csproj", "{13CB876F-7F9B-485F-9D46-87F08A05E3B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{C64EFB9C-EF55-4956-98B4-250810854CF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C64EFB9C-EF55-4956-98B4-250810854CF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C64EFB9C-EF55-4956-98B4-250810854CF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13CB876F-7F9B-485F-9D46-87F08A05E3B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13CB876F-7F9B-485F-9D46-87F08A05E3B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13CB876F-7F9B-485F-9D46-87F08A05E3B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13CB876F-7F9B-485F-9D46-87F08A05E3B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,8 +1,20 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    var session = Context.Session.GetString("UserName");
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero-section">
+    <div class="content">
+        <h2>Revolutionizing Scheduling: The Next Big Thing in Appointment Websites</h2>
+        <p>
+            Seamless, Efficient, and Personalized: Explore the Future of Appointment Management with Our Innovative Website.
+        </p>
+        <p>
+            This app was build with <b>.NET Core 6 with microservices architecture which separates API layer, DataAccess, BussinessModel, Service and MVC.</b>
+        </p>
+        @if (session == null)
+        {
+            <a asp-area="" asp-controller="Home" asp-action="Login" class="button-link">Log In</a>
+        }
+    </div>
+</section>

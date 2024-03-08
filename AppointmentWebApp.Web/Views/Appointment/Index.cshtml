@@ -1,0 +1,85 @@
+﻿@model IEnumerable<AppointmentWebApp.BussinessModel.ViewModel.AppointmentViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="hero-section">
+    <div class="content">
+        <div class="card">
+            <div class="card-header">
+                <a asp-action="Create" class="btn btn-dark">Create New Appointment</a>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Username)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.AppointmentTitle)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.AppointmentPurpose)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.LocationName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.LocationDescription)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.AppointmentDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Status)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.CreatedDate)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Username)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AppointmentTitle)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AppointmentPurpose)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LocationName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LocationDescription)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AppointmentDateStr)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.AppointmentId }, new { @class = "btn btn-primary btn-sm" }) |
+                                    @Html.ActionLink("Details", "Details", new { id = item.AppointmentId }, new { @class = "btn btn-info btn-sm" }) |
+                                    @Html.ActionLink("Cancel", "Delete", new { id = item.AppointmentId }, new { @class = "btn btn-danger btn-sm" })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

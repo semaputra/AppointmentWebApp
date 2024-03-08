@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppointmentWebAppDatabaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AppointmentWebAppDatabase") ?? throw new InvalidOperationException("Connection string 'AppointmentWebAppDatabase' not found.")));
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddServicesFromAssembly(Assembly.Load("AppointmentWebApp.Service"));
 builder.Services.AddControllers();
 //JWT

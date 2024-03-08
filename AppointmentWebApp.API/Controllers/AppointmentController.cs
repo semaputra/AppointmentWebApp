@@ -1,29 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using AppointmentWebApp.DataAccess.Models;
+﻿using AppointmentWebApp.BussinessModel.ViewModel;
 using AppointmentWebApp.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
-using AppointmentWebApp.BussinessModel.ViewModel;
+using Microsoft.AspNetCore.Mvc;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace AppointmentWebApp.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize]
-    public class UserController : ControllerBase
+    public class AppointmentController : ControllerBase
     {
-        protected readonly IUserService _userService;
+        protected readonly IAppointmentService _appointmentService;
 
-        public UserController(IUserService userService)
+        public AppointmentController(IAppointmentService appointmentService)
         {
-            _userService = userService;
+            _appointmentService = appointmentService;
         }
-        // GET: api/<UserController>
+        // GET: api/<AppointmentController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserViewModel>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<AppointmentViewModel>>> GetAppointments()
         {
             try
             {
-                var data = await _userService.GetUsers();
+                var data = await _appointmentService.GetAppointments();
                 if (data == null)
                 {
                     return NotFound();
@@ -36,13 +37,13 @@ namespace AppointmentWebApp.API.Controllers
             }
         }
 
-        // GET api/<UserController>/5
+        // GET api/<AppointmentController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserViewModel>> GetUser(Guid id)
+        public async Task<ActionResult<AppointmentViewModel>> GetAppointment(Guid id)
         {
             try
             {
-                var data = await _userService.GetUser(id);
+                var data = await _appointmentService.GetAppointment(id);
                 if (data == null)
                 {
                     return NotFound();
@@ -55,16 +56,16 @@ namespace AppointmentWebApp.API.Controllers
             }
         }
 
-        // POST api/<UserController>
+        // POST api/<AppointmentController>
         [HttpPost]
-        public async Task<ActionResult> AddUser(UserViewModel user)
+        public async Task<ActionResult> AddAppointment(AppointmentViewModel appointment)
         {
-            if (user.UserId == Guid.Empty)
+            if (appointment.AppointmentId == Guid.Empty)
             {
                 try
                 {
-                    user.UserId = Guid.NewGuid();
-                    var result = await _userService.Add(user);
+                    appointment.AppointmentId = Guid.NewGuid();
+                    var result = await _appointmentService.Add(appointment);
                     return Ok(result);
                 }
                 catch (Exception)
@@ -79,13 +80,13 @@ namespace AppointmentWebApp.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> UpdateUser(UserViewModel user)
+        public async Task<ActionResult> UpdateAppointment(AppointmentViewModel appointment)
         {
-            if (user.UserId != Guid.Empty)
+            if (appointment.AppointmentId != Guid.Empty)
             {
                 try
                 {
-                    var result = await _userService.Update(user);
+                    var result = await _appointmentService.Update(appointment);
                     return Ok(result);
                 }
                 catch (Exception)
@@ -100,15 +101,15 @@ namespace AppointmentWebApp.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> DeleteUser(UserViewModel user)
+        public async Task<ActionResult> DeleteAppointment(AppointmentViewModel appointment)
         {
-            var oldUser = await _userService.GetUser(user.UserId);
-            if (oldUser == null) { return NotFound(); }
+            var oldAppointment = await _appointmentService.GetAppointment(appointment.AppointmentId);
+            if (oldAppointment == null) { return NotFound(); }
             else
             {
                 try
                 {
-                    var result = await _userService.Delete(user.UserId);
+                    var result = await _appointmentService.Delete(appointment.AppointmentId);
                     return Ok(result);
                 }
                 catch (Exception)

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace AppointmentWebApp.DataAccess.Models
+namespace AppointmentWebApp.BussinessModel.ViewModel
 {
-    public partial class Muser
+    public class UserViewModel
     {
-        public Muser()
-        {
-            Tappointments = new HashSet<Tappointment>();
-        }
-
         public Guid UserId { get; set; }
         public string? Username { get; set; }
         public string? Password { get; set; }
@@ -21,7 +19,7 @@ namespace AppointmentWebApp.DataAccess.Models
         public DateTime? ModifiedDate { get; set; }
         public string? ModifiedBy { get; set; }
 
-        public virtual RuserRole? RuserRole { get; set; }
-        public virtual ICollection<Tappointment> Tappointments { get; set; }
+        //Added
+        public int? UserRoleId { get; set; }
     }
 }
